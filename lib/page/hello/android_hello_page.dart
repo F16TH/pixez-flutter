@@ -59,6 +59,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     fullScreenStore.toggle();
   }
 
+  void _refreshCurrentPage() {
+    // 发送刷新信号"101"，专门用于触发刷新操作
+    topStore.setTop("101");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -123,6 +128,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       child: _buildNavigationBar(context),
                     );
                   }),
+            floatingActionButton: index == 0
+                ? FloatingActionButton(
+                    child: Icon(Icons.refresh),
+                    onPressed: _refreshCurrentPage,
+                  )
+                : null,
           ));
     });
   }
