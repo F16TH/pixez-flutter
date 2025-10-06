@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/multi_function_fab.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
@@ -128,12 +129,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       child: _buildNavigationBar(context),
                     );
                   }),
-            floatingActionButton: index == 0
-                ? FloatingActionButton(
-                    child: Icon(Icons.refresh),
-                    onPressed: _refreshCurrentPage,
-                  )
-                : null,
           ));
     });
   }
@@ -143,12 +138,22 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       children: [
         _buildPageContent(context),
         Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 16,
+          bottom: MediaQuery.of(context).padding.bottom + 80, // 调整位置，避免被导航栏遮挡
           right: 16,
           child: Observer(builder: (context) {
-            return AnimatedToggleFullscreenFAB(
-                isFullscreen: fullScreenStore.fullscreen,
-                toggleFullscreen: toggleFullscreen);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (index == 0) // 只在首页显示多功能按钮
+                  MultiFunctionFab(
+                    onRefresh: _refreshCurrentPage,
+                  ),
+                AnimatedToggleFullscreenFAB(
+                  isFullscreen: fullScreenStore.fullscreen,
+                  toggleFullscreen: toggleFullscreen,
+                ),
+              ],
+            );
           }),
         )
       ],
