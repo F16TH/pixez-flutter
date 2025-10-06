@@ -129,12 +129,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       child: _buildNavigationBar(context),
                     );
                   }),
-            floatingActionButton: index == 0
-                ? FloatingActionButton(
-                    child: Icon(Icons.refresh),
-                    onPressed: _refreshCurrentPage,
-                  )
-                : null,
           ));
     });
   }
