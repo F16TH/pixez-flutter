@@ -134,30 +134,40 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildPageView(BuildContext context) {
-    return Stack(
-      children: [
-        _buildPageContent(context),
-        Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 80, // 调整位置，避免被导航栏遮挡
-          right: 16,
-          child: Observer(builder: (context) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (index == 0) // 只在首页显示多功能按钮
-                  MultiFunctionFab(
-                    onRefresh: _refreshCurrentPage,
+    return LayoutBuilder(builder: (context, constraints) {
+      final wide = constraints.maxWidth > constraints.maxHeight;
+      return Stack(
+        children: [
+          _buildPageContent(context),
+          Positioned(
+            bottom: wide 
+                ? 16 // 横屏时使用较小的底部边距
+                : MediaQuery.of(context).padding.bottom + 16, // 竖屏时避免被导航栏遮挡
+            right: 16,
+            child: Observer(builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // 只在首页显示多功能按钮
+                  if (index == 0)
+                    MultiFunctionFab(
+                      onRefresh: _refreshCurrentPage,
+                    ),
+                  // 当同时显示多功能按钮和全屏按钮时添加间距
+                  if (index == 0 && fullScreenStore.fullscreen)
+                    SizedBox(height: 8),
+                  // 显示全屏切换按钮
+                  AnimatedToggleFullscreenFAB(
+                    isFullscreen: fullScreenStore.fullscreen,
+                    toggleFullscreen: toggleFullscreen,
                   ),
-                AnimatedToggleFullscreenFAB(
-                  isFullscreen: fullScreenStore.fullscreen,
-                  toggleFullscreen: toggleFullscreen,
-                ),
-              ],
-            );
-          }),
-        )
-      ],
-    );
+                ],
+              );
+            }),
+          )
+        ],
+      );
+    });
   }
 
   Widget _buildNavigationBar(BuildContext context) {
